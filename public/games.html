@@ -2,53 +2,99 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <title>UPCHAIN – NFT 틀린그림찾기</title>
+    <title>UPCHAIN – NFT 미니게임</title>
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
+    <!-- 공통 헤더 -->
     <header class="navbar">
       <div class="nav-inner">
+        <div class="nav-logo">UPCHAIN</div>
         <nav class="nav-links">
-          <a href="index.html#about">ABOUT</a>
-          <a href="index.html#project">PROJECT</a>
-          <a href="games.html">GAMES</a>
-          <a href="mock-trading.html">MOCK TRADING</a>
-          <a href="news.html">QUIZ</a>
-          <a href="index.html#contact">CONTACT</a>
+          <a href="index.html">ABOUT</a>
+          <a href="#project">PROJECT</a>
+          <a href="games.html" class="active">GAMES</a>
+          <a href="Mock-Trading.html">NEWS / MOCK</a>
+          <a href="news.html">CONTACT</a>
         </nav>
       </div>
     </header>
 
     <main class="main">
-      <div class="page-title">NFT 틀린그림찾기 – 초기 화면</div>
-      <p class="page-subtitle">
-        두 개의 NFT 이미지를 비교하면서 다른 부분을 찾는 미니게임입니다. 희소성
-        개념과 메타데이터 차이를 직관적으로 체험하도록 기획했습니다.
-      </p>
+      <!-- 타이틀 영역 -->
+      <section class="section">
+        <h1 class="page-title">NFT 미니게임 체험존</h1>
+        <p class="page-subtitle">
+          짧은 시간 안에 NFT 이미지를 활용한 미니게임 4종을 체험하면서
+          <strong>디지털 자산의 특징</strong>과 <strong>주소 개념</strong>을 가볍게 익힐 수 있습니다.
+        </p>
+      </section>
 
-      <section class="card">
-        <h2 class="section-title">게임 UI 시안</h2>
-        <div class="diff-images" style="margin-top: 10px">
-          <div>
-            <p style="font-size: 0.8rem; color: #6b7280; margin-bottom: 4px">
-              원본 NFT
-            </p>
-            <!-- 실제 NFT 이미지 파일로 교체하면 됨 -->
-            <img src="https://via.placeholder.com/400x260?text=NFT+Original" />
-          </div>
-          <div>
-            <p style="font-size: 0.8rem; color: #6b7280; margin-bottom: 4px">
-              틀린그림 NFT
-            </p>
-            <img src="https://via.placeholder.com/400x260?text=NFT+Changed" />
-          </div>
-        </div>
+      <!-- 게임 리스트 -->
+      <section class="section section-grid">
+        <!-- 짝맞추기 -->
+        <article class="card game-card">
+          <h2 class="game-title">① NFT 짝맞추기</h2>
+          <p class="game-desc">
+            뒤집힌 카드 속에서 같은 NFT 이미지를 찾아 짝을 맞추는 게임입니다.
+          </p>
+          <ul class="game-meta">
+            <li>⏱ 라운드 제한 시간: 30초</li>
+            <li>🎯 난이도: 쉬움</li>
+            <li>📘 학습 포인트: “같은 토큰이라도 <strong>이미지·메타데이터</strong>가 중요하다”</li>
+          </ul>
+          <button class="btn game-btn" onclick="alert('시연용 더미 버튼입니다!')">
+            게임 시작 
+          </button>
+        </article>
 
-        <div style="margin-top: 16px; font-size: 0.86rem; color: #374151">
-          <p>• 제한 시간: 30초</p>
-          <p>• 다른 부분 3개 찾으면 성공, 3번 틀리면 실패</p>
-          <p>• 정답 공개 시, 어떤 속성이 달랐는지 툴팁으로 표시 (기획)</p>
-        </div>
+        <!-- 틀린그림 찾기 -->
+        <article class="card game-card">
+          <h2 class="game-title">② NFT 틀린그림찾기</h2>
+          <p class="game-desc">
+            비슷해 보이는 두 NFT 이미지에서 미세한 차이를 찾아 클릭하는 게임입니다.
+          </p>
+          <ul class="game-meta">
+            <li>⏱ 라운드 제한 시간: 45초</li>
+            <li>🎯 난이도: 보통</li>
+            <li>📘 체험 효과 : “NFT는 <strong>희소성·차별화 포인트</strong>가 중요하다”</li>
+          </ul>
+          <button class="btn game-btn" onclick="alert('시연용 더미 버튼입니다!')">
+            게임 시작 
+          </button>
+        </article>
+
+        <!-- 지갑 주소 찾기 -->
+        <article class="card game-card">
+          <h2 class="game-title">③ 올바른 지갑주소 찾기</h2>
+          <p class="game-desc">
+            여러 개의 지갑 주소 중에서 실제로 존재 가능한 <strong>정상 주소</strong>를 고르는 게임입니다.
+          </p>
+          <ul class="game-meta">
+            <li>🔐 주소 형식 전체 보여주기 </li>
+            <li>🚫 오타·글자수 오류 등 함정 포함</li>
+            <li>📘 체험효과: “지갑 주소 한 글자만 틀려도 전송 실패 또는 분실”</li>
+          </ul>
+          <button class="btn game-btn" onclick="alert('시연용 더미 버튼입니다!')">
+            게임 시작 
+          </button>
+        </article>
+
+        <!-- 순발력 테스트 -->
+        <article class="card game-card">
+          <h2 class="game-title">④ 순발력 테스트 (가격 신호 클릭)</h2>
+          <p class="game-desc">
+            화면에 랜덤으로 등장하는 가격 신호 중, <strong>조건에 맞는 신호만 빠르게 클릭</strong>하는
+            순발력 테스트입니다.
+          </p>
+          <ul class="game-meta">
+            
+            <li>📘 체험 효과: <strong>단타/과한 매매의 위험성</strong>을 게임으로 체감</li>
+          </ul>
+          <button class="btn game-btn" onclick="alert('시연용 더미 버튼입니다!')">
+            게임 시작 
+          </button>
+        </article>
       </section>
     </main>
   </body>
