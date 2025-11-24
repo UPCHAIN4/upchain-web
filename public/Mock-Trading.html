@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>UPCHAIN – 모의투자 초기 화면</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="nav-inner">
+        <nav class="nav-links">
+          <a href="index.html#about">ABOUT</a>
+          <a href="index.html#project">PROJECT</a>
+          <a href="games.html">GAMES</a>
+          <a href="mock-trading.html">MOCK TRADING</a>
+          <a href="news.html">QUIZ</a>
+          <a href="index.html#contact">CONTACT</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="page-title">모의투자 대시보드 (Upbit OPEN API)</div>
+      <p class="page-subtitle">
+        업비트 공개 시세 API를 사용해 실시간 가격을 불러오고, 가상 계좌
+        잔고를 업데이트하는 체험용 모의투자 화면입니다.
+      </p>
+
+      <section class="grid-3">
+        <!-- 마켓 리스트 -->
+        <div class="card">
+          <h2 class="section-title">
+            마켓 리스트 <span class="badge">KRW 마켓</span>
+          </h2>
+          <p style="font-size: 0.8rem; color: #6b7280; margin-bottom: 8px">
+            /v1/ticker 엔드포인트 기준 BTC, ETH, XRP, SOL 현재가 및 등락률을
+            표시합니다.
+          </p>
+          <div id="marketList" class="market-list"></div>
+          <button
+            id="refreshBtn"
+            class="btn btn-outline"
+            style="margin-top: 10px"
+          >
+            시세 새로고침
+          </button>
+        </div>
+
+        <!-- 가상 계좌 -->
+        <div class="card">
+          <h2 class="section-title">
+            가상 계좌 요약 <span class="badge">Demo</span>
+          </h2>
+          <p style="font-size: 0.83rem; color: #374151; margin-bottom: 10px">
+            초기 잔고는 10,000,000 KRW로 설정되며, 모의 매수 버튼 클릭 시
+            잔고와 평가액을 단순 계산 방식으로 업데이트합니다.
+          </p>
+
+          <p style="font-size: 0.85rem; color: #374151">
+            보유 KRW:
+            <strong id="krwBalance">10,000,000 KRW</strong>
+          </p>
+          <p style="font-size: 0.85rem; color: #374151; margin-top: 4px">
+            보유 코인 평가액:
+            <strong id="coinValue">0 KRW</strong>
+          </p>
+          <p style="font-size: 0.85rem; color: #374151; margin-top: 4px">
+            평가손익:
+            <strong id="pnlText">+0 KRW (0.00%)</strong>
+          </p>
+        </div>
+
+        <!-- 주문 영역 -->
+        <div class="card">
+          <h2 class="section-title">
+            주문 입력 영역 <span class="badge">초기 UI</span>
+          </h2>
+
+          <div style="font-size: 0.82rem; color: #374151">
+            <label style="display: block; margin-bottom: 6px">
+              마켓 선택
+              <select id="orderMarket">
+                <option value="KRW-BTC">KRW-BTC</option>
+                <option value="KRW-ETH">KRW-ETH</option>
+                <option value="KRW-XRP">KRW-XRP</option>
+                <option value="KRW-SOL">KRW-SOL</option>
+              </select>
+            </label>
+
+            <label style="display: block; margin-bottom: 6px">
+              가격 (KRW)
+              <input
+                type="number"
+                id="orderPrice"
+                placeholder="현재가 불러오기 버튼으로 자동 입력"
+              />
+            </label>
+
+            <label style="display: block; margin-bottom: 6px">
+              수량
+              <input type="number" id="orderVolume" placeholder="예: 0.01" />
+            </label>
+
+            <p style="margin-top: 4px">
+              예상 주문 금액:
+              <strong id="orderTotal">0 KRW</strong>
+            </p>
+          </div>
+
+          <div style="margin-top: 10px; display: flex; gap: 8px">
+            <button class="btn btn-outline" id="loadPriceBtn">
+              현재가 불러오기
+            </button>
+            <button class="btn" id="mockBuyBtn">모의 매수</button>
+          </div>
+
+          <p
+            id="orderMsg"
+            style="font-size: 0.8rem; margin-top: 8px; color: #2563eb"
+          ></p>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const marketsParam = "KRW-BTC,KRW-ETH,KRW-XRP,KRW-SOL";
+      let latestTicker = {};
+
+      async function fetchTicker() {
+        try {
+          const res = await fetch(
+            "/api/upbit/ticker?markets=" + encodeURIComponent(marketsParam)
+          );
+          const data = await res.json();
+
+          const listEl = document.getElementById("marketList");
+          listEl.innerHTML = "";
+          latestTicker = {};
+
+          data.forEach((t) => {
+            latestTicker[t.market] = t;
+
+            const row = document.createElement("div");
+            row.className = "market-row";
+
+            const pct = (t.signed_change_rate * 100).toFixed(2);
+            const changeClass = t.change === "RISE" ? "pos" : "neg";
+
+            row.innerHTML = `
+              <div class="market-name">${t.market}</div>
+              <div class="market-price">${t.trade_price.toLocaleString()} KRW</div>
+              <div class="market-change ${changeClass}">${pct}%</div>
+            `;
+            listEl.appendChild(row);
+          });
+        } catch (e) {
+          console.error(e);
+          document.getElementById("marketList").innerHTML =
+            '<p style="font-size:0.8rem;color:#dc2626;">시세를 불러오는 중 오류가 발생했습니다.</p>';
+        }
+      }
+
+      document
+        .getElementById("refreshBtn")
+        .addEventListener("click", fetchTicker);
+
+      // 최초 1회 호출
+      fetchTicker();
+
+      // 가상 계좌 로직
+      let krw = 10000000;
+      let coinValue = 0;
+
+      function updateBalanceUi() {
+        document.getElementById("krwBalance").textContent =
+          krw.toLocaleString() + " KRW";
+        document.getElementById("coinValue").textContent =
+          coinValue.toLocaleString() + " KRW";
+        const total = krw + coinValue;
+        const pnl = total - 10000000;
+        const pct = (pnl / 10000000) * 100;
+        const txt =
+          (pnl >= 0 ? "+" : "") +
+          pnl.toLocaleString() +
+          " KRW (" +
+          (pct >= 0 ? "+" : "") +
+          pct.toFixed(2) +
+          "%)";
+        const el = document.getElementById("pnlText");
+        el.textContent = txt;
+        el.style.color = pnl >= 0 ? "#16a34a" : "#dc2626";
+      }
+
+      updateBalanceUi();
+
+      const orderMarketEl = document.getElementById("orderMarket");
+      const orderPriceEl = document.getElementById("orderPrice");
+      const orderVolumeEl = document.getElementById("orderVolume");
+      const orderTotalEl = document.getElementById("orderTotal");
+      const orderMsgEl = document.getElementById("orderMsg");
+
+      function recalcOrderTotal() {
+        const price = Number(orderPriceEl.value);
+        const vol = Number(orderVolumeEl.value);
+        const total = price * vol || 0;
+        orderTotalEl.textContent = total.toLocaleString() + " KRW";
+        return total;
+      }
+
+      orderPriceEl.addEventListener("input", recalcOrderTotal);
+      orderVolumeEl.addEventListener("input", recalcOrderTotal);
+
+      document
+        .getElementById("loadPriceBtn")
+        .addEventListener("click", () => {
+          const m = orderMarketEl.value;
+          const t = latestTicker[m];
+          if (!t) {
+            orderMsgEl.style.color = "#dc2626";
+            orderMsgEl.textContent = "먼저 시세를 불러와 주세요.";
+            return;
+          }
+          orderPriceEl.value = t.trade_price;
+          recalcOrderTotal();
+          orderMsgEl.style.color = "#2563eb";
+          orderMsgEl.textContent = "현재가를 불러왔습니다.";
+        });
+
+      document.getElementById("mockBuyBtn").addEventListener("click", () => {
+        const price = Number(orderPriceEl.value);
+        const vol = Number(orderVolumeEl.value);
+        const total = recalcOrderTotal();
+
+        if (!price || !vol) {
+          orderMsgEl.style.color = "#dc2626";
+          orderMsgEl.textContent = "가격과 수량을 입력해 주세요.";
+          return;
+        }
+        if (total > krw) {
+          orderMsgEl.style.color = "#dc2626";
+          orderMsgEl.textContent = "보유 KRW가 부족합니다.";
+          return;
+        }
+
+        krw -= total;
+        coinValue += total;
+        updateBalanceUi();
+
+        orderMsgEl.style.color = "#16a34a";
+        orderMsgEl.textContent = "모의 매수 주문이 반영되었습니다.";
+      });
+    </script>
+  </body>
+</html>
