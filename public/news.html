@@ -21,7 +21,7 @@
     </header>
 
     <main class="main">
-      <!-- 뉴스 영역 -->
+     
       <section class="section">
         <h1 class="page-title">투자자 보호 뉴스</h1>
         <p class="page-subtitle">
@@ -29,12 +29,12 @@
           실제 서비스에서는 투자자 보호 뉴스 API를 연동할 수 있습니다.
         </p>
         <div id="news-list" class="section-grid"></div>
-        <p id="news-empty" style="display:none; color:#6b7280; margin-top:12px;">
-        현재 조건에 해당하는 뉴스가 없습니다.
+        <p id="news-empty" style="display:none; margin-top:20px; color:#6b7280;">
+      아직 불러올 수 있는 뉴스가 없습니다
         </p>
       </section>
     </main>
-<script>
+    <script>
   async function loadInvestorNews() {
     const listEl = document.getElementById("news-list");
     const emptyEl = document.getElementById("news-empty");
@@ -43,11 +43,10 @@
     emptyEl.style.display = "none";
 
     try {
-      // 서버 프록시 호출
-      const res = await fetch("/api/investor-news?q=가상자산 투자자 보호");
+      const res = await fetch("/api/investor-news");
       const data = await res.json();
 
-      listEl.innerHTML = ""; // 로딩 문구 제거
+      listEl.innerHTML = "";
 
       const articles = data.articles || [];
       if (articles.length === 0) {
@@ -59,20 +58,20 @@
         const card = document.createElement("article");
         card.className = "card news-card";
 
-        const date = new Date(a.publishedAt);
-        const dateStr = date.toLocaleString("ko-KR", {
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-
-        const sourceName = a.source?.name || "출처 미상";
+        const date = a.publishedAt ? new Date(a.publishedAt) : null;
+        const dateStr = date
+          ? date.toLocaleString("ko-KR", {
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          : "";
 
         card.innerHTML = `
           <h3 class="news-title">${a.title || "제목 없음"}</h3>
           <p class="news-meta">
-            <span class="news-source">${sourceName}</span>
+            <span class="news-source">${(a.source && a.source.name) || "출처 미상"}</span>
             <span class="news-date">${dateStr}</span>
           </p>
           <p class="news-desc">
@@ -94,6 +93,7 @@
 
   document.addEventListener("DOMContentLoaded", loadInvestorNews);
 </script>
+
 
   </body>
 </html>
